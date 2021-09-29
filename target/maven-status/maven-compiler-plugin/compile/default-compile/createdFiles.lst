@@ -1,0 +1,7 @@
+logica\LogicaRegistroHE.class
+logica\LogicaUsuario.class
+logica\Usuario.class
+logica\RegistroHE.class
+persistencia\UsuarioDAO.class
+persistencia\RegistroDAO.class
+persistencia\ConexionBD.class
