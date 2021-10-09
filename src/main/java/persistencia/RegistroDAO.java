@@ -12,6 +12,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import logica.RegistroHE;
+
 /**
  *
  * @author Juan
@@ -27,16 +28,18 @@ public class RegistroDAO {
     public ArrayList<RegistroHE> consultarRegistros() {
         ArrayList<RegistroHE> lista = new ArrayList<>();
         ConexionBD con = new ConexionBD();
-        String sql = "SELECT cod_registro_he, date_he, timeint_he, timeout_he, rn, hed, hen, hf, hedf, henf, rnf, cod_user1 "
+        String sql = "SELECT cod_registro_he, date_he, timeint_he, dateout_he, timeout_he, rn, hed, hen, hf, hedf, henf, rnf, cod_user1 "
                 + "FROM registro_he ";
         ResultSet rs = con.ejecutarQuery(sql);
         try {
             while (rs.next()) {
-                int id = rs.getInt("cod_user1");
-                Date fecha = rs.getDate("date_he");
-                Time hora_int = rs.getTime("timeint_he");
-                Time hora_out = rs.getTime("timeout_he");
-                RegistroHE he = new RegistroHE(id, fecha, hora_int, hora_out);
+                int id = rs.getInt("cod_registro_he");
+                int id_usuario = rs.getInt("cod_user1");
+                String fecha = rs.getString("date_he");
+                String hora_int = rs.getString("timeint_he");
+                String fecha_salida = rs.getString("dateout_he");
+                String hora_out = rs.getString("timeout_he");
+                RegistroHE he = new RegistroHE(id, id_usuario, fecha, hora_int, fecha_salida, hora_out);
                 lista.add(he);
             }
         } catch (SQLException ex) {
@@ -57,16 +60,18 @@ public class RegistroDAO {
     public RegistroHE consultarRegistroPorID(int idAConsultar) {
         RegistroHE he = null;
         ConexionBD con = new ConexionBD();
-        String sql = "SELECT cod_registro_he, date_he, timeint_he, timeout_he, rn, hed, hen, hf, hedf, henf, rnf, cod_user1 "
+        String sql = "SELECT cod_registro_he, date_he, timeint_he, dateout_he, timeout_he, rn, hed, hen, hf, hedf, henf, rnf, cod_user1 "
                 + "FROM registro_he "
-                + "WHERE cod_user1 = " + idAConsultar + " ";
+                + "WHERE cod_registro_he = " + idAConsultar + " ";
         ResultSet rs = con.ejecutarQuery(sql);
         try {
             if (rs.next()) {
-                int id = rs.getInt("cod_user1");
-                Date fecha = rs.getDate("date_he");
-                Time hora_int = rs.getTime("timeint_he");
-                Time hora_out = rs.getTime("timeout_he");
+                int id = rs.getInt("cod_registro_he");
+                int id_usuario = rs.getInt("cod_user1");
+                String fecha = rs.getString("date_he");
+                String hora_int = rs.getString("timeint_he");
+                String fecha_salida = rs.getString("dateout_he");
+                String hora_out = rs.getString("timeout_he");
                 int rn = rs.getInt("rn");
                 int hed = rs.getInt("hed");
                 int hen = rs.getInt("hen");
@@ -74,7 +79,7 @@ public class RegistroDAO {
                 int hedf = rs.getInt("hedf");
                 int henf = rs.getInt("henf");
                 int rnf = rs.getInt("rnf");
-                he = new RegistroHE(id, fecha, hora_int, hora_out, rn, hed, hen, hf, hedf, henf, rnf);
+                he = new RegistroHE(id, id_usuario, fecha, hora_int, fecha_salida, hora_out, rn, hed, hen, hf, hedf, henf, rnf);
 
             }
         } catch (SQLException ex) {
@@ -86,44 +91,39 @@ public class RegistroDAO {
     }
 
     /**
-     * Envía la sentencia SQL para obtener la información de ciertos juguete
-     * mediante filtro y estructura la respuesta en una lista de tipo Juguete
-     *
-     * @param filtro el filtro para buscar datos en la lista de juguetes para
-     * consultar
+     * Envía la sentencia SQL para obtener la información de ciertos juguete mediante filtro y estructura
+     * la respuesta en una lista de tipo Juguete
+     * @param filtro el filtro para buscar datos en la lista de juguetes para consultar
      * @return un arraylist de tipo Juguete con la información cargada
      */
-//    public ArrayList<RegistroHE> consultarRegistrosPorFiltro(String filtro) {
-//        ArrayList<RegistroHE> lista = new ArrayList<>();
-//        ConexionBD con = new ConexionBD();
-//        String sql = "SELECT j.id, j.nombre, j.tipojuguete_id, t.tipo, j.fechacompra, j.estadojuguete_id, e.estado, j.disponibilidad "
-//                + "FROM juguetes j "
-//                + "JOIN tipos_juguetes t ON (j.tipojuguete_id = t.id) "
-//                + "JOIN estados_juguetes e ON (j.estadojuguete_id = e.id) "
-//                + "WHERE j.nombre LIKE '%" + filtro + "%' "
-//                + "OR t.tipo LIKE '%" + filtro + "%' "
-//                + "OR e.estado LIKE '%" + filtro + "%' "
-//                + "OR j.disponibilidad LIKE '%" + filtro + "%' ";
-//        ResultSet rs = con.ejecutarQuery(sql);
-//        try {
-//            while (rs.next()) {
-//                int id = rs.getInt("id");
-//                String nombre = rs.getString("nombre");
-//                int idTipo = rs.getInt("tipojuguete_id");
-//                String fechaCompra = rs.getString("fechacompra");
-//                int idEstado = rs.getInt("estadojuguete_id");
-//                String disponibilidad = rs.getString("disponibilidad");
-//                Juguete j = new Juguete(id, nombre, idTipo, fechaCompra, idEstado, disponibilidad);
-//                lista.add(j);
-//            }
-//        } catch (SQLException ex) {
-//            con.desconectar();
-//            return null;
-//        }
-//        con.desconectar();
-//        return lista;
-//    }
-
+     public ArrayList<RegistroHE> consultarJuguetesPorFiltro(String filtro) {
+        ArrayList<RegistroHE> lista = new ArrayList<>();
+        ConexionBD con = new ConexionBD();
+        String sql = "SELECT j.cod_registro_he, j.date_he, j.timeint_he, j.dateout_he, j.timeout_he, j.cod_user1 " +
+                     "FROM registro_he j " +
+                     "JOIN users u ON (j.cod_user1 = u.id) " +
+                     "WHERE u.user_u LIKE '%" + filtro + "%' " +
+                     "OR j.date_he LIKE '%" + filtro + "%' " +
+                     "OR j.dateout_he LIKE '%" + filtro + "%' ";
+        ResultSet rs = con.ejecutarQuery(sql);
+        try {
+            while (rs.next()) {
+                int id = rs.getInt("cod_registro_he");
+                int id_usuario = rs.getInt("cod_user1");
+                String fecha = rs.getString("date_he");
+                String hora_int = rs.getString("timeint_he");
+                String fecha_salida = rs.getString("dateout_he");
+                String hora_out = rs.getString("timeout_he");
+                RegistroHE he = new RegistroHE(id, id_usuario, fecha, hora_int, fecha_salida, hora_out);
+                lista.add(he);
+            }
+        } catch (SQLException ex) {
+            con.desconectar();
+            return null;
+        }
+        con.desconectar();
+        return lista;
+    }
     /**
      * Envía la sentencia SQL para almacenar el dato de un nuevo registro
      *
@@ -132,12 +132,13 @@ public class RegistroDAO {
      */
     public int guardarNuevoRegistro(RegistroHE he) {
         ConexionBD con = new ConexionBD();
-        Date fecha = he.getFecha_registro();
-        Time horaint = he.getHora_int();
-        Time horaout = he.getHora_out();
+        String fecha = he.getFecha_registro();
+        String horaint = he.getHora_int();
+        String fecha_salida = he.getFecha_salida();
+        String horaout = he.getHora_out();
 
-        String sql = "INSERT INTO juguetes (date_he, timeint_he, timeout_he) "
-                + "VALUES ('" + fecha + "', " + horaint + ", '" + horaout + "') ";
+        String sql = "INSERT INTO registro_he (date_he, timeint_he, dateout_he, timeout_he) "
+                + "VALUES ('" + fecha + "', '" + horaint + "', '" + fecha_salida + "', '" + horaout + "') ";
         ResultSet rs = con.ejecutarInsert(sql);
         int id = 0;
         try {
@@ -161,12 +162,13 @@ public class RegistroDAO {
     public int guardarRegistroExistente(RegistroHE he) {
         ConexionBD con = new ConexionBD();
         int id = he.getId();
-        Date fecha = he.getFecha_registro();
-        Time horaint = he.getHora_int();
-        Time horaout = he.getHora_out();
+        String fecha = he.getFecha_registro();
+        String horaint = he.getHora_int();
+        String fecha_salida = he.getFecha_salida();
+        String horaout = he.getHora_out();
 
-        String sql = "UPDATE juguetes "
-                + "SET date_he = '" + fecha + "' , timeint_he = " + horaint + " , timeout_he = '" + horaout +"' "
+        String sql = "UPDATE registro_he "
+                + "SET date_he = '" + fecha + "' , timeint_he = '" + horaint + "' , dateout_he = '" + fecha_salida + "' , timeout_he = '" + horaout + "' "
                 + "WHERE cod_registro_he = " + id + " ";
         int filas = con.ejecutarUpdate(sql);
         con.desconectar();

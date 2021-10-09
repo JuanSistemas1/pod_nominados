@@ -5,8 +5,6 @@
  */
 package logica;
 
-import java.sql.Date;
-import java.sql.Time;
 
 /**
  *
@@ -14,9 +12,11 @@ import java.sql.Time;
  */
 public class RegistroHE {
     private int id;
-    private Date fecha_registro;
-    private Time hora_int;
-    private Time hora_out;
+    private int id_usuario;
+    private String fecha_registro;
+    private String hora_int;
+    private String fecha_salida;
+    private String hora_out;
     private int rn;
     private int hed;
     private int hen;
@@ -28,24 +28,37 @@ public class RegistroHE {
 
     public RegistroHE() {
     }
-
-    public RegistroHE(Date fecha_registro, Time hora_int, Time hora_out) {
+//mirar como guardar registro con id de usuario automaticamente.
+    public RegistroHE(int id_usuario, String fecha_registro, String hora_int, String fecha_salida, String hora_out) {
+        this.id_usuario = 1;
         this.fecha_registro = fecha_registro;
         this.hora_int = hora_int;
+        this.fecha_salida = fecha_salida;
         this.hora_out = hora_out;
     }
 
-    public RegistroHE(int id, Date fecha_registro, Time hora_int, Time hora_out) {
-        this.id = id;
+    public RegistroHE(String fecha_registro, String hora_int, String fecha_salida, String hora_out) {
         this.fecha_registro = fecha_registro;
         this.hora_int = hora_int;
+        this.fecha_salida = fecha_salida;
+        this.hora_out = hora_out;
+    }
+           
+    public RegistroHE(int id, int id_usuario, String fecha_registro, String hora_int, String fecha_salida, String hora_out) {
+        this.id = id;
+        this.id_usuario = id_usuario;
+        this.fecha_registro = fecha_registro;
+        this.hora_int = hora_int;
+        this.fecha_salida = fecha_salida;
         this.hora_out = hora_out;
     }
 
-    public RegistroHE(int id, Date fecha_registro, Time hora_int, Time hora_out, int rn, int hed, int hen, int hef, int hedf, int henf, int rnf) {
+    public RegistroHE(int id, int id_usuario, String fecha_registro, String hora_int, String fecha_salida, String hora_out, int rn, int hed, int hen, int hef, int hedf, int henf, int rnf) {
         this.id = id;
+        this.id_usuario = 1;
         this.fecha_registro = fecha_registro;
         this.hora_int = hora_int;
+        this.fecha_salida = fecha_salida;
         this.hora_out = hora_out;
         this.rn = rn;
         this.hed = hed;
@@ -64,27 +77,27 @@ public class RegistroHE {
         this.id = id;
     }
 
-    public Date getFecha_registro() {
+    public String getFecha_registro() {
         return fecha_registro;
     }
 
-    public void setFecha_registro(Date fecha_registro) {
+    public void setFecha_registro(String fecha_registro) {
         this.fecha_registro = fecha_registro;
     }
 
-    public Time getHora_int() {
+    public String getHora_int() {
         return hora_int;
     }
 
-    public void setHora_int(Time hora_int) {
+    public void setHora_int(String hora_int) {
         this.hora_int = hora_int;
     }
 
-    public Time getHora_out() {
+    public String getHora_out() {
         return hora_out;
     }
 
-    public void setHora_out(Time hora_out) {
+    public void setHora_out(String hora_out) {
         this.hora_out = hora_out;
     }
 
@@ -151,6 +164,22 @@ public class RegistroHE {
 
     public void setCod_user(int cod_user) {
         this.cod_user = cod_user;
+    }
+
+    public String getFecha_salida() {
+        return fecha_salida;
+    }
+
+    public void setFecha_salida(String fecha_salida) {
+        this.fecha_salida = fecha_salida;
+    }
+
+    public int getId_usuario() {
+        return id_usuario;
+    }
+
+    public void setId_usuario(int id_usuario) {
+        this.id_usuario = id_usuario;
     }
     
     

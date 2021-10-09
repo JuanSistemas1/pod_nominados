@@ -4,4 +4,6 @@
     Author     : Juan
 --%>
 
-<% response.sendRedirect("registrosHE_lista.jsp"); %>
+<%
+    request.getRequestDispatcher("registrosHE_lista.jsp").forward(request, response);
+%>
